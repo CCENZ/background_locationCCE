@@ -149,7 +149,7 @@ class LocationUpdatesService : Service() {
         val filter = IntentFilter()
         filter.addAction(STOP_SERVICE)
          if(Build.VERSION.SDK_INT >= 33) {
-              registerReceiver(broadcastReceiver, filter, RECEIVER_EXPORTED)
+              registerReceiver(broadcastReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
           } else {
               registerReceiver(broadcastReceiver, filter)
           }
