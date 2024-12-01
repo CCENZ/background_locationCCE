@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.*
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
@@ -147,7 +148,12 @@ class LocationUpdatesService : Service() {
 
         val filter = IntentFilter()
         filter.addAction(STOP_SERVICE)
-        registerReceiver(broadcastReceiver, filter)
+         if(Build.VERSION.SDK_INT >= 33) {
+              registerReceiver(broadcastReceiver, filter, RECEIVER_EXPORTED)
+          } else {
+              registerReceiver(broadcastReceiver, filter)
+          }
+
 
         updateNotification() // to start the foreground service
     }
