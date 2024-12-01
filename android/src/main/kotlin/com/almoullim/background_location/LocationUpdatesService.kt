@@ -171,7 +171,7 @@ class LocationUpdatesService : Service() {
         if (!isStarted) {
             isStarted = true
             //startForeground(NOTIFICATION_ID, notification.build())
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if(Build.VERSION.SDK_INT >= 33) {
                 startForeground(NOTIFICATION_ID, notification.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
             } else {
                 startForeground(NOTIFICATION_ID, notification.build())
