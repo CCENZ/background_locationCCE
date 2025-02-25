@@ -110,9 +110,14 @@ class LocationUpdatesService : Service() {
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             
             mFusedLocationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult?) {
-                    super.onLocationResult(locationResult)
-                    onNewLocation(locationResult!!.lastLocation)
+                override fun onLocationResult(locationResult: LocationResult) {
+                    // Smart cast to 'Location' is impossible, because 'locationResult.lastLocation'
+                    // is a property that has open or custom getter
+                    val newLastLocation = locationResult.lastLocation
+                    if (newLastLocation is Location) {
+                        super.onLocationResult(locationResult)
+                        onNewLocation(newLastLocation)
+                    }
                 }
             }
         } else {
@@ -133,7 +138,7 @@ class LocationUpdatesService : Service() {
         mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Application Name"
-            val mChannel = NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
+            val mChannel = NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
             mChannel.setSound(null, null)
             mNotificationManager!!.createNotificationChannel(mChannel)
         }
@@ -148,11 +153,11 @@ class LocationUpdatesService : Service() {
 
         val filter = IntentFilter()
         filter.addAction(STOP_SERVICE)
-         if(Build.VERSION.SDK_INT >= 33) {
-              registerReceiver(broadcastReceiver, filter, RECEIVER_EXPORTED)
-          } else {
-              registerReceiver(broadcastReceiver, filter)
-          }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(broadcastReceiver, filter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(broadcastReceiver, filter)
+        }
 
 
         updateNotification() // to start the foreground service
@@ -163,7 +168,7 @@ class LocationUpdatesService : Service() {
         Utils.setRequestingLocationUpdates(this, true)
         try {
             if (isGoogleApiAvailable && !this.forceLocationManager) {
-                mFusedLocationClient!!.requestLocationUpdates(mLocationRequest,
+                mFusedLocationClient!!.requestLocationUpdates(mLocationRequest!!,
                     mFusedLocationCallback!!, Looper.myLooper())
             } else {
                 mLocationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, mLocationManagerCallback!!)
@@ -176,8 +181,7 @@ class LocationUpdatesService : Service() {
     fun updateNotification() {
         if (!isStarted) {
             isStarted = true
-            //startForeground(NOTIFICATION_ID, notification.build())
-            if(Build.VERSION.SDK_INT >= 33) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 startForeground(NOTIFICATION_ID, notification.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
             } else {
                 startForeground(NOTIFICATION_ID, notification.build())
