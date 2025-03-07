@@ -183,7 +183,7 @@ class LocationUpdatesService : Service() {
         if (!isStarted) {
             isStarted = true
 
-            int sType = 0;
+            var sType = 0
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 sType = ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             }
