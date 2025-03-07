@@ -190,6 +190,7 @@ class BackgroundLocationService: MethodChannel.MethodCallHandler, PluginRegistry
      */
     private fun checkPermissions(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)
+            && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     }
 
 
@@ -209,8 +210,17 @@ class BackgroundLocationService: MethodChannel.MethodCallHandler, PluginRegistry
 
         } else {
             Log.i(BackgroundLocationPlugin.TAG, "Requesting permission")
+
+
+            val permissions = java.util.ArrayList<String>()
+            if(!(PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION))){
+                permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+            if(!(PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_BACKGROUND_LOCATION))){
+                permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            }
             ActivityCompat.requestPermissions(activity!!,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    permissions.toTypedArray(),
                     REQUEST_PERMISSIONS_REQUEST_CODE)
         }
     }
