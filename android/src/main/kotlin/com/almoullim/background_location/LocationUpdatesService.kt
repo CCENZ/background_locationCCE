@@ -16,6 +16,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.common.*
+import androidx.core.app.ServiceCompat
 
 class LocationUpdatesService : Service() {
 
@@ -181,11 +182,14 @@ class LocationUpdatesService : Service() {
     fun updateNotification() {
         if (!isStarted) {
             isStarted = true
+
+
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                startForeground(NOTIFICATION_ID, notification.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+                ServiceCompat.startForeground(this, NOTIFICATION_ID, notification.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
             } else {
-                startForeground(NOTIFICATION_ID, notification.build())
+                ServiceCompat.startForeground(this, NOTIFICATION_ID, notification.build())
             }
+
 
         } else {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
