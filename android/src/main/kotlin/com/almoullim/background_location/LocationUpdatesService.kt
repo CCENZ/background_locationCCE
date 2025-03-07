@@ -195,7 +195,7 @@ class LocationUpdatesService : Service() {
 
             val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
             wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Location Background Service")
-            wl.acquire()
+            wl!!.acquire()
 
         } else {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
