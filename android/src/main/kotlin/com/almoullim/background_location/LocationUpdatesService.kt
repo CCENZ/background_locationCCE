@@ -17,6 +17,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.common.*
 import androidx.core.app.ServiceCompat
+import android.os.PowerManager
 
 class LocationUpdatesService : Service() {
 
@@ -85,6 +86,7 @@ class LocationUpdatesService : Service() {
                     .setContentTitle(NOTIFICATION_TITLE)
                     .setOngoing(true)
                     .setSound(null)
+                    .setGroup("service")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setSmallIcon(resources.getIdentifier(NOTIFICATION_ICON, "mipmap", packageName))
                     .setWhen(System.currentTimeMillis())
@@ -188,6 +190,10 @@ class LocationUpdatesService : Service() {
                 sType = ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             }
             ServiceCompat.startForeground(this, NOTIFICATION_ID, notification.build(), sType)
+
+            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Location Background Service")
+            wl.acquire()
 
         } else {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

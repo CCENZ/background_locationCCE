@@ -110,7 +110,14 @@ class BackgroundLocationService: MethodChannel.MethodCallHandler, PluginRegistry
             val intent = Intent(context, LocationUpdatesService::class.java)
             intent.putExtra("distance_filter", distanceFilter)
             intent.putExtra("force_location_manager", forceLocationManager)
-            context!!.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+        
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                context!!.startService(intent)
+            } else {
+                context!!.startForegroundService(intent)
+            }
+            //context!!.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
 
         return 0
