@@ -22,6 +22,7 @@ import android.os.PowerManager
 class LocationUpdatesService : Service() {
 
     private var forceLocationManager: Boolean = false
+    private var wl: WakeLock? = null
 
     override fun onBind(intent: Intent?): IBinder {
         val distanceFilter = intent?.getDoubleExtra("distance_filter", 0.0)
