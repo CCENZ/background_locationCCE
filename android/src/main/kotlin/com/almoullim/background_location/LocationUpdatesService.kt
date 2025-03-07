@@ -18,6 +18,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.common.*
 import androidx.core.app.ServiceCompat
 import android.os.PowerManager
+import android.os.PowerManager.WakeLock
 
 class LocationUpdatesService : Service() {
 
