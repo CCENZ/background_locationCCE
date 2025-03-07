@@ -183,13 +183,11 @@ class LocationUpdatesService : Service() {
         if (!isStarted) {
             isStarted = true
 
-
+            int sType = 0;
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ServiceCompat.startForeground(this, NOTIFICATION_ID, notification.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
-            } else {
-                ServiceCompat.startForeground(this, NOTIFICATION_ID, notification.build())
+                sType = ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             }
-
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification.build(), sType)
 
         } else {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
